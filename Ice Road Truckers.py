@@ -95,7 +95,8 @@ def is_royal_flush(cards, wildcards = 0):
             if num in cards:
                 count += 1
         if count >= 5 - wildcards:
-            eval_nums["royal_flush"] += 1
+            return True
+    return False
     
 def is_flush(cards, wildcards = 0):
     cards.sort()
@@ -136,8 +137,8 @@ def same_cards(cards, wildcards = 0):
     values = {}
     five_of_a_kind = False
     four_of_a_kind = False
-    three_of_a_kind = False
-    pair = False
+    full_house = False
+    one_pair = False
     
     for card in cards:
         value = get_value(card)
@@ -150,28 +151,25 @@ def same_cards(cards, wildcards = 0):
             five_of_a_kind = True
         if value >= 4 - wildcards:
             four_of_a_kind = True
+            
         if wildcards == 1:
             if value >= 3:
-                three_of_a_kind = True
-                pair = True
+                full_house = True
             elif value == 2:
-                if three_of_a_kind == False:
-                    three_of_a_kind = True
-                else:
-                    pair = True
+                if one_pair == True:
+                    full_house = True
+                one_pair = True
         elif wildcards == 2:
             if value >= 2:
-                    three_of_a_kind = True
-                    pair = True
-        else:
-            three_of_a_kind = True
-            pair = True
+                full_house = True
+        elif wildcards >= 3:
+            full_house = True
             
     if five_of_a_kind:
         eval_nums["five_of_a_kind"] += 1
     if four_of_a_kind:
         eval_nums["four_of_a_kind"] += 1
-    if three_of_a_kind and pair:
+    if full_house:
         eval_nums["full_house"] += 1
     
 def evaluate(board, hand):
@@ -199,6 +197,7 @@ def evaluate(board, hand):
         eval_nums["straight_flush"] += 1
     if (is_royal_flush(eval_cards, wildcards)):
         eval_nums["royal_flush"] += 1
+        
     same_cards(eval_cards, wildcards)
     
 # simulation
